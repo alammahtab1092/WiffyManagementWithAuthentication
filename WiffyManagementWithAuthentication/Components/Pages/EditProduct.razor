@@ -1,0 +1,77 @@
+﻿@page "/EditProduct/{ProductId}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authorization
+@using WiffyManagementWithAuthentication.Data
+@inject WiffyManagementWithAuthentication.Services.ProductService productService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<h3>Edit Product</h3>
+
+<hr />
+<form oninvalid="submit">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="for-group">
+                <lable for="ProductFirstName" class="control-label">Product First Name</lable>
+                <input form="ProductFirstName" class="form-control" @bind="product.ProductFirstName" />
+            </div>
+            <div>
+                <lable for="ProductMiddleName" class="control-label">Product Middle Name</lable>
+                <input form="ProductMiddleName" class="form-control" @bind="product.ProductMiddleName" />
+            </div>
+            <div class="for-group">
+                <lable for="ProductLastName" class="control-label">Product Last Name</lable>
+                <input form="ProductLastName" class="form-control" @bind="product.ProductLastName" />
+            </div>
+            <div class="for-group">
+                <lable for="ProductTitle" class="control-label">Product Title</lable>
+                <input form="ProductTitle" class="form-control" @bind="product.ProductTitle" />
+            </div>
+            <div class="for-group">
+                <lable for="ProductDescription" class="control-label">Product Description</lable>
+                <input form="ProductDescription" class="form-control" @bind="product.ProductDescription" />
+            </div>
+            <div class="for-group">
+                <lable for="ProductCountry" class="control-label">Product Country</lable>
+                <input form="ProductCountry" class="form-control" @bind="product.ProductCountry" />
+            </div>
+            <div class="for-group">
+                <lable for="ProductPhone" class="control-label">Product Phone</lable>
+                <input form="ProductPhone" class="form-control" @bind="product.ProductPhone" />
+            </div>
+        </div>
+    </div>
+    <div />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+                <input type="button" class="btn btn-primary" @onclick="UpdateProductDetails" value="Update Product" />
+                <input type="button" class="btn btn-danger" @onclick="Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+
+    [Parameter]
+    public string ProductId { get; set; }
+
+    Product product = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await Task.Run(() => productService.GetProductById(Convert.ToInt32(ProductId)));
+    }
+
+    protected async void UpdateProductDetails()
+    {
+        await productService.UpdateProductById(product);
+        NavigationManager.NavigateTo("Products");
+    }
+
+    protected void Cancel() => NavigationManager.NavigateTo("Products");
+}

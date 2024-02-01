@@ -1,0 +1,83 @@
+﻿@page "/Products"
+@using Microsoft.AspNetCore.Authorization
+@using WiffyManagementWithAuthentication
+@using WiffyManagementWithAuthentication.Data
+@inject WiffyManagementWithAuthentication.Services.ProductService productService
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<NavLink class="nav-link" href="AddNewProduct">
+    <span class="oi oi-plus" aria-hidden="true"> Add New Product</span>
+</NavLink>
+<h3>ProductList</h3>
+@if(ProductObj is null)
+{
+    <p><em>Loading Product details, please wait ...............</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Id</th>
+                <th>Product First Name</th>
+                <th>Product Middle Name</th>
+                <th>Product Last Name</th>
+                <th>Product Title</th>
+                <th>Product Description</th>
+                <th>Product Country</th>
+                <th>Product Phone</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var product in ProductObj)
+            {
+                <tr>
+                    <td>
+                        @product.ProductId
+                    </td>
+                    <td>
+                        @product.ProductFirstName
+                    </td>
+                    <td>
+                        @product.ProductMiddleName
+                    </td>
+                    <td>
+                        @product.ProductLastName
+                    </td>
+                    <td>
+                        @product.ProductTitle
+                    </td>
+                    <td>
+                        @product.ProductDescription
+                    </td>
+                    <td>
+                        @product.ProductCountry
+                    </td>
+                    <td>
+                        @product.ProductPhone
+                    </td>
+                    <td>
+                        <a class="nav-link btn btn-primary" href="EditProduct/@product.ProductId">
+                            <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="nav-link btn btn-danger" href="DeleteProduct/@product.ProductId">
+                            <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    List<Product> ProductObj;
+    protected override async Task OnInitializedAsync()
+    {
+        ProductObj = await Task.Run(() => productService.GetAllProducts());
+    }
+}

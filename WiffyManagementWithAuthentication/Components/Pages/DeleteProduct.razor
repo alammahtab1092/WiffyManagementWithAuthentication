@@ -1,0 +1,75 @@
+﻿@page "/DeleteProduct/{ProductId}"
+@using Microsoft.AspNetCore.Authorization
+@using WiffyManagementWithAuthentication.Data
+@inject WiffyManagementWithAuthentication.Services.ProductService productService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<h3>Delete Product</h3>
+
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="for-group">
+                <lable for="ProductFirstName" class="control-label">Product First Name</lable>
+                <label>@product.ProductFirstName</label>
+            </div>
+            <div>
+                <lable for="ProductMiddleName" class="control-label">Product Middle Name</lable>
+                <label>@product.ProductMiddleName</label>
+            </div>
+            <div class="for-group">
+                <lable for="ProductLastName" class="control-label">Product Last Name</lable>
+                <label>@product.ProductLastName</label>
+            </div>
+            <div class="for-group">
+                <lable for="ProductTitle" class="control-label">Product Title</lable>
+                <label>@product.ProductTitle</label>
+            </div>
+            <div class="for-group">
+                <lable for="ProductDescription" class="control-label">Product Description</lable>
+                <label>@product.ProductDescription</label>
+            </div>
+            <div class="for-group">
+                <lable for="ProductCountry" class="control-label">Product Country</lable>
+                <label>@product.ProductCountry</label>
+            </div>
+            <div class="for-group">
+                <lable for="ProductPhone" class="control-label">Product Phone</lable>
+                <label>@product.ProductPhone</label>
+            </div>
+        </div>
+    </div>
+    <div />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@DeleteProductDetails" value="Delete Product" />
+                <input type="button" class="btn btn-danger" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+
+    [Parameter]
+    public string ProductId { get; set; }
+
+    Product product = new Product();
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await Task.Run(() => productService.GetProductById(Convert.ToInt32(ProductId)));
+    }
+
+    protected async void DeleteProductDetails()
+    {
+        await productService.DeleteProduct(product);
+        NavigationManager.NavigateTo("Products");
+    }
+
+    protected void Cancel() => NavigationManager.NavigateTo("Products");
+}
